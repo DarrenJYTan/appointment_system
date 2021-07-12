@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Doctor;
+use App\Models\Nurse;
+use App\Models\Patient;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -39,6 +43,9 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        $this->middleware('guest:doctor');
+        $this->middleware('guest:nurse');
+        $this->middleware('guest:patient');
     }
 
     /**
@@ -56,6 +63,21 @@ class RegisterController extends Controller
         ]);
     }
 
+    public function doctorRegisterForm()
+    {
+        return view('auth.register', ['url' => 'doctor']);
+    }
+
+    public function nurseRegisterForm()
+    {
+        return view('auth.register', ['url' => 'nurse']);
+    }
+
+    public function patientRegisterForm()
+    {
+        return view('auth.register', ['url' => 'patient']);
+    }
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -69,5 +91,38 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    protected function doctorCreate(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $doctor = Doctor::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/doctor');
+    }
+
+    protected function nurseCreate(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $nurse = Nurse::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/nurse');
+    }
+
+    protected function patientCreate(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $patient = Patient::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/patient');
     }
 }

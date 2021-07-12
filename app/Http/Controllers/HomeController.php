@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppointmentList;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -25,4 +26,19 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function getAppointmentCode(Request $req)
+    {
+        $dataList = new AppointmentList;
+        $dataList->save();
+    }
+
+    public function storeAppointmentCode(Request $req)
+    {
+        $dataList = new AppointmentList;
+        $dataList->appointmentCode = $req->input('appointmentCode');
+        $dataList->save();
+        //return redirect('patient.home')->with('Appointment code is send', 'Plese wait');
+    }
+
 }
